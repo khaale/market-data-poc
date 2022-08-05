@@ -1,0 +1,50 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      concurrency: 4
+app:
+  tradeLoader:
+    suffix: 1
+    batchSize: 100
+  processor:
+    optimisticTransactionMode: true
+  kafka:
+    topics:
+      trades: trades
+ignite:
+#  igniteInstanceName: properties-instance-name
+  zkConnectionString: localhost:2181
+  communicationSpi:
+    localPort: 5555
+  metricsLogFrequency: 0
+  dataStorageConfiguration:
+    defaultDataRegionConfiguration:
+      initialSize: 10485760 #10MB
+    dataRegionConfigurations:
+      - name: my-dataregion
+        initialSize: 104857600 #100MB
+  cacheConfiguration:
+    - name: trades
+      queryEntities:
+        - tableName: TRADES
+          keyFieldName: tradeNo
+          keyType: java.lang.Long
+          valueType: org.khaale.mdp.realtime.common.entities.Trade
+          fields:
+            tradeNo: java.lang.Long
+            tradeTime: java.time.LocalTime
+            boardId: java.lang.String
+            secId: java.lang.String
+            priceUnscaled: java.lang.Long
+            priceScale: java.lang.Byte
+            quantity: java.lang.Long
+            valueUnscaled: java.lang.Long
+            valueScale: java.lang.Byte
+            buySell: java.lang.String
+            sysTime: java.time.Instant
+
+
+logging:
+  level:
+    org.apache.ignite: WARN

@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>WebSocket</title>
+
+    <script src="resources/js/sockjs-0.3.4.js"></script>
+    <script src="resources/js/stomp.js"></script>
+
+    <script type="text/javascript">
+
+	        var stompClient = null;
+
+	        function setConnected(connected) {
+	            document.getElementById('connect').disabled = connected;
+	            document.getElementById('disconnect').disabled = !connected;
+	        }
+
+	        function connect() {
+	            var socket = new SockJS('/web-socket');
+	            stompClient = Stomp.over(socket);
+	            stompClient.connect({}, function(frame) {
+	            	setConnected(true);
+	                console.log('Connected: ' + frame);
+	                stompClient.subscribe('/topic/candles_PT1M', function(messageOutput) {
+	                    showMessageOutput(JSON.parse(messageOutput.body));
+	                });
+	            });
+	        }
+
+	        function disconnect() {
+	            if(stompClient != null) {
+	                stompClient.disconnect();
+	            }
+	            setConnected(false);
+	            console.log("Disconnected");
+	        }
+
+            var maxProcessorLatency = 0;
+            var maxFeedLatency = 0;
+            var totalMessagesReceived = 0;
+            var statsQueue = [];
+            const statsQueueSize = 100;
+
+	        function showMessageOutput(m) {
+	            const nowTime = (new Date()).getTime();
+	            const latency = nowTime - new Date(m.updateSourceSysTime).getTime();
+	            totalMessagesReceived++;
+	            statsQueue.push(latency);
+	            document.getElementById('stock1').innerHTML =
+	                `${m.secId}:`
+	                + `, latency=${latency}`
+	                + `, totalMessagesReceived=${totalMessagesReceived}`
+	            ;
+	            if (statsQueue.length == 100) {
+	                showStats(statsQueue);
+	                statsQueue = [];
+	            }
+	        }
+
+	        function showStats(queue) {
+	            queue.sort();
+	            document.getElementById('stats').innerHTML =
+	                `Latency stats for last ${statsQueueSize} messages:`
+	                +` MIN = ${queue[0]}`
+	                +`, p50 = ${queue[Math.floor(statsQueueSize*0.5)]}`
+	                +`, p90 = ${queue[Math.floor(statsQueueSize*0.9)]}`
+	                +`, p95 = ${queue[Math.floor(statsQueueSize*0.95)]}`
+	                +`, p99 = ${queue[Math.floor(statsQueueSize*0.99)]}`
+	                +`, MAX = ${queue[statsQueueSize - 1]}`
+	        }
+
+    </script>
+
+</head>
+
+<body onload="disconnect()">
+
+<div>
+    <br/>
+    <div>
+        <button id="connect" onclick="connect();">Get candles</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Stop</button>
+    </div>
+    <br/>
+    <div>
+        <p id="stock1"></p>
+        <p id="stats"></p>
+    </div>
+</div>
+
+</body>
+</html>

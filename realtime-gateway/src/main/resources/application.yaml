@@ -1,0 +1,9 @@
+ignite:
+  #  igniteInstanceName: properties-instance-name
+  zkConnectionString: localhost:2181
+  communicationSpi:
+    localPort: 5555
+  metricsLogFrequency: 0
+  dataStorageConfiguration:
+    dataRegionConfigurations:
+      - name: my-dataregion
