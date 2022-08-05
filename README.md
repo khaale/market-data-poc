@@ -15,11 +15,8 @@ TBD
 2. Run local Apache Kafka and Zookeeper at standard ports:
    - **zookeeper** - *localhost:2181*
    - **kafka** - *localhost:8082*
-3. Run services:
-   - `./run-realtime-processor.sh`
-   - `./run-realtime-gateway.sh`
-4. Open *localhost:8080* and press *Get candles* button
-5. Run feed emulator to start getting trades into system: `./run-feed-emulator.sh`
+3. Run services: `./scripts/run-local-nondistributed.sh`
+4. Wait for some time, open *localhost:8080* and press *Get candles* button
 6. Check *localhost:8080* for received messages statistics.
    There will be something like 
 ```
