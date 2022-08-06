@@ -23,6 +23,9 @@
 	                stompClient.subscribe('/topic/candles_PT1M', function(messageOutput) {
 	                    showMessageOutput(JSON.parse(messageOutput.body));
 	                });
+	                stompClient.subscribe('/topic/system/ignite-node-stats', function(messageOutput) {
+	                    showIgniteNodeStats(JSON.parse(messageOutput.body));
+	                });
 	            });
 	        }
 
@@ -68,6 +71,16 @@
 	                +`, MAX = ${queue[statsQueueSize - 1]}`
 	        }
 
+	        function showIgniteNodeStats(stats) {
+                const rootEl = document.getElementById('ignite-node-stats');
+                rootEl.innerHTML = '';
+                for (const line of stats) {
+                    const lineEl = document.createElement('p');
+                    lineEl.innerHTML = line;
+                    rootEl.appendChild(lineEl);
+                }
+	        }
+
     </script>
 
 </head>
@@ -84,6 +97,10 @@
     <div>
         <p id="stock1"></p>
         <p id="stats"></p>
+        <div>
+            <p>Ignite stats:</p>
+            <div id="ignite-node-stats"></div>
+        </div>
     </div>
 </div>
 

@@ -12,5 +12,6 @@ java \
   --add-opens=java.base/java.util=ALL-UNNAMED \
   --add-opens=java.base/java.lang=ALL-UNNAMED \
   --add-opens=java.base/java.time=ALL-UNNAMED \
+  "$@" \
   -jar ./../realtime-gateway/target/realtime-gateway-1.0-SNAPSHOT.jar \
   org.khaale.mdp.realtime.gateway.RealtimeGatewayApplication
