@@ -1,11 +1,11 @@
 # market-data-poc
 
-A PoC of near-realtime market data distribution platform
+A PoC of near-realtime market data distribution platform, based on Apache Ignite.
 
-# Intro
+# Architecture
 
-## Architecture
-TBD
+## Solution components
+![architecture-components](/docs/diagrams/architecture-components.png)
 
 # Running
 
