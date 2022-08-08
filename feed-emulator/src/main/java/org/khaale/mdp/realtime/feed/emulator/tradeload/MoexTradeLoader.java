@@ -22,6 +22,10 @@ import java.util.function.Consumer;
 @Service
 public class MoexTradeLoader implements TradeLoader {
 
+    @Value("${app.tradeLoader.secCount}")
+    private int secCount = 10;
+
+
     @Value("${app.tradeLoader.suffix}")
     private int suffix = 0;
 
@@ -100,7 +104,7 @@ public class MoexTradeLoader implements TradeLoader {
 
         var trade = Trade.builder()
                 .tradeNo(tradeNo + (iterationTradeNo - initialTradeNo))
-                .secId(startElement.getAttributeByName(new QName("SECID")).getValue())
+                .secId(generateSecId(tradeNo))
                 .price(Double.parseDouble(startElement.getAttributeByName(new QName("PRICE")).getValue()))
                 .tradeTime(tradeTime.plus(ChronoUnit.SECONDS.between(initialTradeTime, iterationTradeTime), ChronoUnit.SECONDS))
                 .sysTime(Instant.now())
@@ -108,6 +112,10 @@ public class MoexTradeLoader implements TradeLoader {
         lastTradeNo = trade.getTradeNo();
         lastTradeTime = trade.getTradeTime();
         return Optional.of(trade);
+    }
+
+    private String generateSecId(long tradeNo) {
+        return String.format("%4s", tradeNo % secCount).replace(' ', '0');
     }
 
 

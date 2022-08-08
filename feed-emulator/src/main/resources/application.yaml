@@ -7,3 +7,5 @@ app:
   tradeLoader:
     suffix: 1
     batchSize: 10
+    secCount: 100
+    batchDelay: 0

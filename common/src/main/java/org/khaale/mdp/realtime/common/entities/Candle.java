@@ -1,7 +1,7 @@
 package org.khaale.mdp.realtime.common.entities;
 
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.ignite.cache.affinity.AffinityKeyMapped;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -16,7 +16,10 @@ import java.time.LocalTime;
 public class Candle {
 
     private String key;
+
+    @AffinityKeyMapped
     private String secId;
+
     private LocalTime timeStart;
     private double hi;
     private double low;

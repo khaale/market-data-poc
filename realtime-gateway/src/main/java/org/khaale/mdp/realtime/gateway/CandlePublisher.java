@@ -16,6 +16,7 @@ public class CandlePublisher {
     private final SimpMessagingTemplate simpleMessagingTemplate;
 
     public void publish(Candle candle) {
-        simpleMessagingTemplate.convertAndSend("/topic/candles_PT1M", candle);
+        var destination = String.format("/topic/candles_PT1M/%s", candle.getSecId());
+        simpleMessagingTemplate.convertAndSend(destination, candle);
     }
 }

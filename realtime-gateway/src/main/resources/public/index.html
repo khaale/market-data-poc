@@ -20,7 +20,7 @@
 	            stompClient.connect({}, function(frame) {
 	            	setConnected(true);
 	                console.log('Connected: ' + frame);
-	                stompClient.subscribe('/topic/candles_PT1M', function(messageOutput) {
+	                stompClient.subscribe('/topic/candles_PT1M/0001', function(messageOutput) {
 	                    showMessageOutput(JSON.parse(messageOutput.body));
 	                });
 	                stompClient.subscribe('/topic/system/ignite-node-stats', function(messageOutput) {
@@ -60,7 +60,7 @@
 	        }
 
 	        function showStats(queue) {
-	            queue.sort();
+	            queue.sort((a,b) => a - b);
 	            document.getElementById('stats').innerHTML =
 	                `Latency stats for last ${statsQueueSize} messages:`
 	                +` MIN = ${queue[0]}`

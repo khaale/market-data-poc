@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.khaale.mdp.realtime.feed.emulator.configuration.ProducerConfiguration;
 import org.khaale.mdp.realtime.feed.emulator.tradeload.MoexTradeLoader;
 import org.khaale.mdp.realtime.common.entities.Trade;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +25,8 @@ public class FeedEmulatorApplication implements CommandLineRunner {
     private long tradesSent = 0L;
     private long batchStartTime = 0L;
     private final int statsBatchSize = 1000;
+    @Value("${app.tradeLoader.batchDelay}")
+    private int batchDelay = 10;
 
     public static void main(String[] args) {
         SpringApplication.run(FeedEmulatorApplication.class);
@@ -60,8 +63,9 @@ public class FeedEmulatorApplication implements CommandLineRunner {
         );
         kafkaTemplate.flush();
         tradesSent += trades.size();
-        Thread.sleep(5);
-
+        if (batchDelay > 0) {
+            Thread.sleep(batchDelay);
+        }
         if (tradesSent % statsBatchSize == 0) {
             printStats(tradesSent);
             batchStartTime = System.currentTimeMillis();
