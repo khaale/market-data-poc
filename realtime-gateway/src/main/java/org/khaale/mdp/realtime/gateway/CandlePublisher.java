@@ -17,6 +17,7 @@ public class CandlePublisher {
 
     public void publish(Candle candle) {
         var destination = String.format("/topic/candles_PT1M/%s", candle.getSecId());
+        candle.setGatewayReceiveTime(Instant.now());
         simpleMessagingTemplate.convertAndSend(destination, candle);
     }
 }

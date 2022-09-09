@@ -31,7 +31,7 @@ public class CandleMakingProcessor implements TradeProcessor {
 
     @Override
     public void process(Collection<Trade> trades) {
-        log.info("Processing trades..");
+        //log.info("Processing trades..");
         if (Objects.isNull(candleCache)) {
             candleCache = cacheProvider.getCandleCache(candleDuration);
         }
@@ -61,7 +61,7 @@ public class CandleMakingProcessor implements TradeProcessor {
                 log.warn("Optimistic concurrency failed");
             }
         }
-        log.info("Trades processed: {}", trades.size());
+        //log.info("Trades processed: {}", trades.size());
     }
 
     private Candle make(Duration candleDuration, Trade trade, Function<String,Candle> candleGetter) {

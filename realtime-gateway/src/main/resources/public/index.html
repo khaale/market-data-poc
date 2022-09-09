@@ -40,29 +40,35 @@
             var maxProcessorLatency = 0;
             var maxFeedLatency = 0;
             var totalMessagesReceived = 0;
-            var statsQueue = [];
+            var e2eStatsQueue = [];
+            var gatewayStatsQueue = [];
             const statsQueueSize = 100;
 
 	        function showMessageOutput(m) {
 	            const nowTime = (new Date()).getTime();
 	            const latency = nowTime - new Date(m.updateSourceSysTime).getTime();
 	            totalMessagesReceived++;
-	            statsQueue.push(latency);
+	            gatewayStatsQueue.push(new Date(m.gatewayReceiveTime).getTime() - new Date(m.updateSourceSysTime).getTime());
+	            e2eStatsQueue.push(latency);
 	            document.getElementById('stock1').innerHTML =
 	                `${m.secId}:`
 	                + `, latency=${latency}`
 	                + `, totalMessagesReceived=${totalMessagesReceived}`
 	            ;
-	            if (statsQueue.length == 100) {
-	                showStats(statsQueue);
-	                statsQueue = [];
+	            if (gatewayStatsQueue.length == statsQueueSize) {
+	                showStats('gatewayStats', gatewayStatsQueue);
+	                gatewayStatsQueue = [];
+	            }
+	            if (e2eStatsQueue.length == statsQueueSize) {
+	                showStats('e2eStats', e2eStatsQueue);
+	                e2eStatsQueue = [];
 	            }
 	        }
 
-	        function showStats(queue) {
+	        function showStats(statName, queue) {
 	            queue.sort((a,b) => a - b);
-	            document.getElementById('stats').innerHTML =
-	                `Latency stats for last ${statsQueueSize} messages:`
+	            document.getElementById(statName).innerHTML =
+	                `Latency ${statName} for last ${statsQueueSize} messages:`
 	                +` MIN = ${queue[0]}`
 	                +`, p50 = ${queue[Math.floor(statsQueueSize*0.5)]}`
 	                +`, p90 = ${queue[Math.floor(statsQueueSize*0.9)]}`
@@ -96,7 +102,8 @@
     <br/>
     <div>
         <p id="stock1"></p>
-        <p id="stats"></p>
+        <p id="e2eStats"></p>
+        <p id="gatewayStats"></p>
         <div>
             <p>Ignite stats:</p>
             <div id="ignite-node-stats"></div>

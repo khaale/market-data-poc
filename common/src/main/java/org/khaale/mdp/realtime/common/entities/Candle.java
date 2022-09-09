@@ -31,6 +31,7 @@ public class Candle {
     private Instant createSourceSysTime;
     private Instant updateSysTime;
     private Instant updateSourceSysTime;
+    private Instant gatewayReceiveTime;
     private long numTrades = 0;
 
     public static String getKey(String secId, LocalTime timeStart) {
